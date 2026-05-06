@@ -1,11 +1,61 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import { getCollection } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import {
+  compareEssaysByDateDesc,
+  formatEssayDate,
+  getEssayUrl,
+} from "../lib/essays";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const essays = (await getCollection("essays", ({ data }) => data.draft !== true))
+  .sort(compareEssaysByDateDesc)
+  .slice(0, 5);
 ---
 
 <Layout>
-	<Welcome />
+  <main class="page-shell home">
+    <section class="hero" aria-labelledby="home-title">
+      <p class="page-kicker">Personal Publication</p>
+      <h1 id="home-title" class="page-title">Hauyue Tang</h1>
+      <p class="page-intro">关于政治、科学与现代世界的随笔与评论。</p>
+    </section>
+
+    <section class="latest" aria-labelledby="latest-title">
+      <h2 id="latest-title" class="section-heading">Latest Essays</h2>
+
+      {
+        essays.length > 0 ? (
+          <ol class="essay-list">
+            {essays.map((essay) => (
+              <li class="essay-item">
+                <article>
+                  <p class="essay-meta">{formatEssayDate(essay.data.date)}</p>
+                  <h3 class="essay-title">
+                    <a href={getEssayUrl(essay)}>{essay.data.title}</a>
+                  </h3>
+                  <p class="essay-description">{essay.data.description}</p>
+                </article>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <p class="empty-state">文章将陆续发布。</p>
+        )
+      }
+    </section>
+  </main>
 </Layout>
+
+<style>
+  .home {
+    padding-top: clamp(70px, 13vw, 128px);
+  }
+
+  .hero {
+    margin-bottom: clamp(72px, 14vw, 118px);
+  }
+
+  .empty-state {
+    color: var(--muted);
+  }
+</style>

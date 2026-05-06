@@ -1,0 +1,53 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import {
+  compareEssaysByDateDesc,
+  formatEssayDate,
+  getEssayUrl,
+} from "../../lib/essays";
+
+const essays = (await getCollection("essays", ({ data }) => data.draft !== true)).sort(
+  compareEssaysByDateDesc,
+);
+---
+
+<Layout title="Essays" description="Hauyue Tang 的随笔与评论文章列表。" canonicalPath="/essays/">
+  <main class="page-shell">
+    <p class="page-kicker">Archive</p>
+    <h1 class="page-title">Essays</h1>
+    <p class="page-intro">时评、长文，以及关于政治、科学与现代性的笔记。</p>
+
+    <section class="archive" aria-label="文章列表">
+      {
+        essays.length > 0 ? (
+          <ol class="essay-list">
+            {essays.map((essay) => (
+              <li class="essay-item">
+                <article>
+                  <p class="essay-meta">{formatEssayDate(essay.data.date)}</p>
+                  <h2 class="essay-title">
+                    <a href={getEssayUrl(essay)}>{essay.data.title}</a>
+                  </h2>
+                  <p class="essay-description">{essay.data.description}</p>
+                </article>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <p class="empty-state">文章将陆续发布。</p>
+        )
+      }
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .archive {
+    margin-top: 54px;
+  }
+
+  .empty-state {
+    color: var(--muted);
+  }
+</style>
