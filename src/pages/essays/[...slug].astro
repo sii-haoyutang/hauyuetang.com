@@ -4,6 +4,7 @@ import Layout from "../../layouts/Layout.astro";
 import {
   compareEssaysByDateDesc,
   formatEssayDate,
+  getEssayKeywords,
   getEssaySlug,
   getEssayUrl,
   type Essay,
@@ -26,6 +27,7 @@ interface Props {
 
 const { essay } = Astro.props;
 const { Content } = await render(essay);
+const keywords = getEssayKeywords(essay);
 ---
 
 <Layout
@@ -33,6 +35,7 @@ const { Content } = await render(essay);
   description={essay.data.description}
   canonicalPath={getEssayUrl(essay)}
   ogType="article"
+  keywords={keywords}
 >
   <main class="page-shell article-shell">
     <article>
@@ -40,6 +43,25 @@ const { Content } = await render(essay);
         <p class="essay-meta">{formatEssayDate(essay.data.date)}</p>
         <h1 class="article-title">{essay.data.title}</h1>
         <p class="article-description">{essay.data.description}</p>
+        {
+          keywords.length > 0 && (
+            <div class="article-keywords">
+              <span class="keyword-label">关键词</span>
+              <ul class="keyword-row">
+                {keywords.map((keyword) => (
+                  <li class="keyword">{keyword}</li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+        {
+          essay.data.doi && (
+            <p class="article-doi">
+              DOI <a href={essay.data.doi}>{essay.data.doi.replace("https://doi.org/", "")}</a>
+            </p>
+          )
+        }
       </header>
 
       <div class="prose">
@@ -56,6 +78,8 @@ const { Content } = await render(essay);
 
   .article-header {
     margin-bottom: 56px;
+    padding-bottom: 34px;
+    border-bottom: 1px solid var(--line);
   }
 
   .article-title {
@@ -71,5 +95,25 @@ const { Content } = await render(essay);
     color: var(--muted);
     font-size: 1.08rem;
     line-height: 1.8;
+  }
+
+  .article-keywords {
+    margin-top: 22px;
+  }
+
+  .article-keywords .keyword-row {
+    margin-top: 8px;
+  }
+
+  .article-doi {
+    margin: 18px 0 0;
+    color: var(--faint);
+    font-size: 0.82rem;
+  }
+
+  .article-doi a {
+    color: var(--muted);
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
   }
 </style>

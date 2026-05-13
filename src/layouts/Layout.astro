@@ -6,6 +6,7 @@ interface Props {
   description?: string;
   canonicalPath?: string;
   ogType?: "website" | "article";
+  keywords?: string[];
 }
 
 const {
@@ -13,12 +14,14 @@ const {
   description = "关于政治、科学与现代世界的随笔与评论。",
   canonicalPath = Astro.url.pathname,
   ogType = "website",
+  keywords = [],
 } = Astro.props;
 
 const siteName = "Hauyue Tang";
 const pageTitle = title ? `${title} | ${siteName}` : siteName;
 const siteUrl = Astro.site ?? new URL("https://hauyuetang.com");
 const canonicalUrl = new URL(canonicalPath, siteUrl).href;
+const keywordContent = [...new Set(keywords)].join(", ");
 ---
 
 <!doctype html>
@@ -31,6 +34,7 @@ const canonicalUrl = new URL(canonicalPath, siteUrl).href;
     <link rel="canonical" href={canonicalUrl} />
     <link rel="alternate" type="application/rss+xml" title={siteName} href="/rss.xml" />
     <meta name="description" content={description} />
+    {keywordContent && <meta name="keywords" content={keywordContent} />}
     <meta name="generator" content={Astro.generator} />
     <meta property="og:site_name" content={siteName} />
     <meta property="og:title" content={pageTitle} />
@@ -68,7 +72,9 @@ const canonicalUrl = new URL(canonicalPath, siteUrl).href;
     --faint: #8a857d;
     --line: #ded8cc;
     --accent: #7a2e22;
+    --accent-soft: #efe0d3;
     --surface: #f4f0e8;
+    --surface-strong: #eee7dc;
     font-family:
       "Noto Serif SC", "Source Han Serif SC", "Songti SC", Georgia, "Times New Roman",
       serif;
@@ -85,7 +91,9 @@ const canonicalUrl = new URL(canonicalPath, siteUrl).href;
       --faint: #8c8378;
       --line: #342f28;
       --accent: #d7a171;
+      --accent-soft: #33261e;
       --surface: #1a1815;
+      --surface-strong: #211e1a;
     }
   }
 
@@ -103,8 +111,18 @@ const canonicalUrl = new URL(canonicalPath, siteUrl).href;
   body {
     margin: 0;
     min-width: 320px;
-    background: var(--background);
+    background:
+      linear-gradient(90deg, color-mix(in srgb, var(--line) 38%, transparent) 1px, transparent 1px)
+        center top / min(100% - 40px, 800px) 100% no-repeat,
+      var(--background);
     color: var(--text);
+  }
+
+  body::before {
+    display: block;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--line));
+    content: "";
   }
 
   a {
@@ -145,12 +163,24 @@ const canonicalUrl = new URL(canonicalPath, siteUrl).href;
     justify-content: space-between;
     gap: 24px;
     padding: 30px 0 24px;
+    border-bottom: 1px solid var(--line);
   }
 
   .site-title {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5rem;
     font-size: 1rem;
     font-weight: 700;
     line-height: 1;
+  }
+
+  .site-title::after {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--accent);
+    content: "";
   }
 
   nav {
@@ -177,12 +207,22 @@ const canonicalUrl = new URL(canonicalPath, siteUrl).href;
   }
 
   .page-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
     margin-bottom: 16px;
     color: var(--faint);
     font-size: 0.78rem;
     letter-spacing: 0.08em;
     line-height: 1;
     text-transform: uppercase;
+  }
+
+  .page-kicker::before {
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+    content: "";
   }
 
   .page-title {
@@ -217,8 +257,16 @@ const canonicalUrl = new URL(canonicalPath, siteUrl).href;
   }
 
   .essay-item {
-    padding: 26px 0 30px;
+    padding: 28px 0 32px;
     border-bottom: 1px solid var(--line);
+    transition:
+      border-color 160ms ease,
+      padding-left 160ms ease;
+  }
+
+  .essay-item:hover {
+    padding-left: 10px;
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
   }
 
   .essay-meta {
@@ -241,6 +289,34 @@ const canonicalUrl = new URL(canonicalPath, siteUrl).href;
     color: var(--muted);
     font-size: 0.98rem;
     line-height: 1.75;
+  }
+
+  .keyword-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .keyword {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.8rem;
+    padding: 0.18rem 0.62rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 0.76rem;
+    line-height: 1.25;
+  }
+
+  .keyword-label {
+    color: var(--faint);
+    font-size: 0.76rem;
   }
 
   .prose {
@@ -272,6 +348,19 @@ const canonicalUrl = new URL(canonicalPath, siteUrl).href;
 
   .prose p {
     margin-bottom: 0;
+    text-indent: 2em;
+  }
+
+  .prose blockquote p,
+  .prose li p {
+    text-indent: 0;
+  }
+
+  .prose .katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.4rem 0;
+    text-indent: 0;
   }
 
   .prose a {

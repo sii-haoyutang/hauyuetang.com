@@ -2,6 +2,7 @@ import { getCollection } from "astro:content";
 import type { APIRoute } from "astro";
 import {
   compareEssaysByDateDesc,
+  getEssayKeywords,
   getEssayUrl,
 } from "../lib/essays";
 
@@ -24,6 +25,9 @@ export const GET: APIRoute = async () => {
   const items = essays
     .map((essay) => {
       const url = new URL(getEssayUrl(essay), siteUrl).href;
+      const categories = getEssayKeywords(essay)
+        .map((keyword) => `<category>${escapeXml(keyword)}</category>`)
+        .join("");
 
       return [
         "<item>",
@@ -32,6 +36,7 @@ export const GET: APIRoute = async () => {
         `<link>${url}</link>`,
         `<guid>${url}</guid>`,
         `<pubDate>${essay.data.date.toUTCString()}</pubDate>`,
+        categories,
         "</item>",
       ].join("");
     })

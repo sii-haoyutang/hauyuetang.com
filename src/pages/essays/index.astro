@@ -4,6 +4,7 @@ import Layout from "../../layouts/Layout.astro";
 import {
   compareEssaysByDateDesc,
   formatEssayDate,
+  getEssayKeywords,
   getEssayUrl,
 } from "../../lib/essays";
 
@@ -12,7 +13,12 @@ const essays = (await getCollection("essays", ({ data }) => data.draft !== true)
 );
 ---
 
-<Layout title="Essays" description="Hauyue Tang 的随笔与评论文章列表。" canonicalPath="/essays/">
+<Layout
+  title="Essays"
+  description="Hauyue Tang 的随笔与评论文章列表。"
+  canonicalPath="/essays/"
+  keywords={["政治", "科学", "现代性", "长文", "时评"]}
+>
   <main class="page-shell">
     <p class="page-kicker">Archive</p>
     <h1 class="page-title">Essays</h1>
@@ -22,17 +28,28 @@ const essays = (await getCollection("essays", ({ data }) => data.draft !== true)
       {
         essays.length > 0 ? (
           <ol class="essay-list">
-            {essays.map((essay) => (
-              <li class="essay-item">
-                <article>
-                  <p class="essay-meta">{formatEssayDate(essay.data.date)}</p>
-                  <h2 class="essay-title">
-                    <a href={getEssayUrl(essay)}>{essay.data.title}</a>
-                  </h2>
-                  <p class="essay-description">{essay.data.description}</p>
-                </article>
-              </li>
-            ))}
+            {essays.map((essay) => {
+              const keywords = getEssayKeywords(essay);
+
+              return (
+                <li class="essay-item">
+                  <article>
+                    <p class="essay-meta">{formatEssayDate(essay.data.date)}</p>
+                    <h2 class="essay-title">
+                      <a href={getEssayUrl(essay)}>{essay.data.title}</a>
+                    </h2>
+                    <p class="essay-description">{essay.data.description}</p>
+                    {keywords.length > 0 && (
+                      <ul class="keyword-row" aria-label="关键词">
+                        {keywords.map((keyword) => (
+                          <li class="keyword">{keyword}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </article>
+                </li>
+              );
+            })}
           </ol>
         ) : (
           <p class="empty-state">文章将陆续发布。</p>

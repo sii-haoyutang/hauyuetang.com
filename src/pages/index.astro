@@ -4,6 +4,7 @@ import Layout from "../layouts/Layout.astro";
 import {
   compareEssaysByDateDesc,
   formatEssayDate,
+  getEssayKeywords,
   getEssayUrl,
 } from "../lib/essays";
 
@@ -12,12 +13,20 @@ const essays = (await getCollection("essays", ({ data }) => data.draft !== true)
   .slice(0, 5);
 ---
 
-<Layout>
+<Layout keywords={["政治", "科学", "现代性", "随笔", "评论"]}>
   <main class="page-shell home">
     <section class="hero" aria-labelledby="home-title">
-      <p class="page-kicker">Personal Publication</p>
-      <h1 id="home-title" class="page-title">Hauyue Tang</h1>
-      <p class="page-intro">关于政治、科学与现代世界的随笔与评论。</p>
+      <div class="hero-copy">
+        <p class="page-kicker">Personal Publication</p>
+        <h1 id="home-title" class="page-title">Hauyue Tang</h1>
+        <p class="page-intro">关于政治、科学与现代世界的随笔与评论。</p>
+      </div>
+
+      <aside class="editorial-note" aria-label="刊物主题">
+        <p>Politics</p>
+        <p>Science</p>
+        <p>Modernity</p>
+      </aside>
     </section>
 
     <section class="latest" aria-labelledby="latest-title">
@@ -26,17 +35,28 @@ const essays = (await getCollection("essays", ({ data }) => data.draft !== true)
       {
         essays.length > 0 ? (
           <ol class="essay-list">
-            {essays.map((essay) => (
-              <li class="essay-item">
-                <article>
-                  <p class="essay-meta">{formatEssayDate(essay.data.date)}</p>
-                  <h3 class="essay-title">
-                    <a href={getEssayUrl(essay)}>{essay.data.title}</a>
-                  </h3>
-                  <p class="essay-description">{essay.data.description}</p>
-                </article>
-              </li>
-            ))}
+            {essays.map((essay) => {
+              const keywords = getEssayKeywords(essay);
+
+              return (
+                <li class="essay-item">
+                  <article>
+                    <p class="essay-meta">{formatEssayDate(essay.data.date)}</p>
+                    <h3 class="essay-title">
+                      <a href={getEssayUrl(essay)}>{essay.data.title}</a>
+                    </h3>
+                    <p class="essay-description">{essay.data.description}</p>
+                    {keywords.length > 0 && (
+                      <ul class="keyword-row" aria-label="关键词">
+                        {keywords.map((keyword) => (
+                          <li class="keyword">{keyword}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </article>
+                </li>
+              );
+            })}
           </ol>
         ) : (
           <p class="empty-state">文章将陆续发布。</p>
@@ -52,7 +72,33 @@ const essays = (await getCollection("essays", ({ data }) => data.draft !== true)
   }
 
   .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(150px, 0.34fr);
+    gap: 40px;
+    align-items: end;
     margin-bottom: clamp(72px, 14vw, 118px);
+    padding-bottom: clamp(36px, 7vw, 64px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .editorial-note {
+    margin: 0;
+    padding: 18px 0 0;
+    border-top: 2px solid var(--accent);
+    color: var(--muted);
+    font-size: 0.82rem;
+    line-height: 1.65;
+  }
+
+  .editorial-note p {
+    margin: 0;
+  }
+
+  @media (max-width: 620px) {
+    .hero {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
   }
 
   .empty-state {

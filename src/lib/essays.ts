@@ -14,6 +14,10 @@ export function getEssayUrl(essay: Pick<Essay, "id">) {
   return `/essays/${getEssaySlug(essay)}/`;
 }
 
+export function getEssayKeywords(essay: Pick<Essay, "data">) {
+  return [...new Set([...essay.data.keywords, ...essay.data.tags])];
+}
+
 export function formatEssayDate(date: Date, locale = "zh-CN") {
   return new Intl.DateTimeFormat(locale, {
     year: "numeric",
