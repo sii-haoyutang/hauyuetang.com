@@ -1,0 +1,14 @@
+{
+  "CSpell disabled math block": {
+    "scope": "markdown",
+    "prefix": "cspellmath",
+    "description": "Insert a KaTeX display math block with cspell disabled.",
+    "body": [
+      "<!-- cspell:disable -->",
+      "\\$\\$",
+      "$1",
+      "\\$\\$",
+      "<!-- cspell:enable -->"
+    ]
+  }
+}

@@ -15,6 +15,32 @@
     "node_modules": true
   },
 
+  "cSpell.words": [
+    "Behler",
+    "cutoff",
+    "DFT",
+    "DimeNet",
+    "equivariance",
+    "equivariant",
+    "EFA",
+    "EqFormer",
+    "Equiformer",
+    "ERoPE",
+    "MACE",
+    "MPNN",
+    "MPNNs",
+    "NequIP",
+    "Parrinello",
+    "readout",
+    "RoPE",
+    "SchNet",
+    "self-attention",
+    "softmax",
+    "KaTeX",
+    "LaTeX",
+    "ViSNet"
+  ],
+
   "[astro]": {
     "editor.defaultFormatter": "astro-build.astro-vscode"
   },
@@ -27,5 +53,7 @@
       "strings": "off",
       "other": "off"
     }
-  }
+  },
+
+  "markdown.styles": ["markdown-preview.css"]
 }

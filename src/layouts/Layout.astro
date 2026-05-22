@@ -112,8 +112,12 @@ const keywordContent = [...new Set(keywords)].join(", ");
     margin: 0;
     min-width: 320px;
     background:
-      linear-gradient(90deg, color-mix(in srgb, var(--line) 38%, transparent) 1px, transparent 1px)
-        center top / min(100% - 40px, 800px) 100% no-repeat,
+      linear-gradient(
+          90deg,
+          color-mix(in srgb, var(--line) 38%, transparent) 1px,
+          transparent 1px
+        )
+        center top / min(100% - 40px, 880px) 100% no-repeat,
       var(--background);
     color: var(--text);
   }
@@ -351,8 +355,32 @@ const keywordContent = [...new Set(keywords)].join(", ");
     text-indent: 2em;
   }
 
+  .prose figure {
+    margin: 1.8em 0;
+  }
+
+  .prose figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0 auto;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--surface);
+  }
+
+  .prose figcaption {
+    margin-top: 0.72rem;
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.75;
+    text-align: center;
+    text-indent: 0;
+  }
+
   .prose blockquote p,
-  .prose li p {
+  .prose li p,
+  .prose figcaption {
     text-indent: 0;
   }
 
@@ -360,6 +388,10 @@ const keywordContent = [...new Set(keywords)].join(", ");
     overflow-x: auto;
     overflow-y: hidden;
     padding: 0.4rem 0;
+    text-indent: 0;
+  }
+
+  .prose .katex-display + p {
     text-indent: 0;
   }
 

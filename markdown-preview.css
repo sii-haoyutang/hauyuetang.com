@@ -1,0 +1,14 @@
+.markdown-preview-view p,
+.vscode-body p {
+  text-indent: 2em;
+}
+
+.markdown-preview-view p.katex-block,
+.vscode-body p.katex-block {
+  text-indent: 0;
+}
+
+.markdown-preview-view p.katex-block + p,
+.vscode-body p.katex-block + p {
+  text-indent: 0 !important;
+}
