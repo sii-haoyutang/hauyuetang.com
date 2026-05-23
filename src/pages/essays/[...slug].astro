@@ -26,8 +26,10 @@ interface Props {
 }
 
 const { essay } = Astro.props;
-const { Content } = await render(essay);
+const { Content, headings } = await render(essay);
 const keywords = getEssayKeywords(essay);
+const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+const hasToc = tocHeadings.length >= 2;
 ---
 
 <Layout
@@ -64,8 +66,27 @@ const keywords = getEssayKeywords(essay);
         }
       </header>
 
-      <div class="prose">
-        <Content />
+      <div class="article-body">
+        {
+          hasToc && (
+            <aside class="article-toc" aria-labelledby="article-toc-title">
+              <p id="article-toc-title" class="article-toc-title">
+                目录
+              </p>
+              <ol class="article-toc-list">
+                {tocHeadings.map((heading) => (
+                  <li class:list={["article-toc-item", `depth-${heading.depth}`]}>
+                    <a href={`#${heading.slug}`}>{heading.text}</a>
+                  </li>
+                ))}
+              </ol>
+            </aside>
+          )
+        }
+
+        <div class="prose">
+          <Content />
+        </div>
       </div>
     </article>
   </main>
@@ -81,6 +102,12 @@ const keywords = getEssayKeywords(essay);
     margin-bottom: 56px;
     padding-bottom: 34px;
     border-bottom: 1px solid var(--line);
+  }
+
+  .article-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 36px;
   }
 
   .article-title {
@@ -102,6 +129,54 @@ const keywords = getEssayKeywords(essay);
     max-width: 780px;
   }
 
+  .article-toc {
+    padding: 18px 20px 20px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--surface);
+  }
+
+  .article-toc-title {
+    margin: 0 0 12px;
+    color: var(--faint);
+    font-size: 0.76rem;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .article-toc-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .article-toc-item {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.94rem;
+    line-height: 1.65;
+  }
+
+  .article-toc-item + .article-toc-item {
+    margin-top: 0.45rem;
+  }
+
+  .article-toc-item.depth-3 {
+    padding-left: 1rem;
+    color: var(--faint);
+    font-size: 0.88rem;
+  }
+
+  .article-toc-item a {
+    text-decoration: underline;
+    text-decoration-color: transparent;
+  }
+
+  .article-toc-item a:hover {
+    text-decoration-color: currentColor;
+  }
+
   .article-keywords {
     margin-top: 22px;
   }
@@ -120,6 +195,27 @@ const keywords = getEssayKeywords(essay);
     color: var(--muted);
     text-decoration: underline;
     text-underline-offset: 0.18em;
+  }
+
+  @media (min-width: 980px) {
+    .article-shell {
+      width: min(100% - 40px, 1080px);
+    }
+
+    .article-body {
+      grid-template-columns: minmax(0, 780px) 220px;
+      align-items: start;
+    }
+
+    .article-toc {
+      position: sticky;
+      top: 28px;
+      order: 2;
+    }
+
+    .prose {
+      order: 1;
+    }
   }
 
   @media (max-width: 620px) {
