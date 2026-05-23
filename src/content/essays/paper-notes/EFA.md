@@ -2,8 +2,18 @@
 title: "在三维欧氏空间中基于注意力机制实现的点云全连接图"
 description: "本文解读 J. Thorben Frank、Stefan Chmiela、Klaus-Robert Müller 与 Oliver T. Unke 发表在 Nature Machine Intelligence（2026, 8:388-402）的论文 Machine learning global atomic representations with Euclidean fast attention，主题是用于欧氏空间数据和机器学习力场的线性复杂度 EFA。"
 doi: "https://doi.org/10.1038/s42256-026-01195-y"
-date: 2026-05-13
+date: 2026-05-21
 draft: false
+tags:
+  - 论文解读
+  - 机器学习力场
+  - 几何深度学习
+  - 注意力机制
+keywords:
+  - EFA
+  - ERoPE
+  - MPNN
+  - Euclidean attention
 ---
 
 ## 1 导言
@@ -564,7 +574,7 @@ $$
 $$
 \mathbf{x}_m \in \mathbb{R}^{P\times (L+1)^2 \times H},
 \qquad
-\mathbf{x}_m^{(\ell,p)} \in \mathbb{R}^{(2\ell+1)\times H}. 
+\mathbf{x}_m^{(\ell,p)} \in \mathbb{R}^{(2\ell+1)\times H}.
 $$
 
 <!-- cspell:enable -->
@@ -744,11 +754,13 @@ $$
 这里重复指标 $n$ 与 $a$ 都按照爱因斯坦求和约定求和。第一步先在原子索引 $n$ 上聚合所有 key-value 对，得到与具体 query 无关的全局张量 $\mathbf{C}_{\mathbf{u}}$；第二步再由每个 query 切片从左侧读取该张量。若恢复结构化轴，便有
 
 <!-- cspell:disable -->
+
 $$
 \mathbf{C}_{\mathbf{u}}
 \in
 \mathbb{R}^{P_{qk}\times(L_{qk}+1)^2\times D_{qk}\times P_v\times(L_v+1)^2\times D_v}.
 $$
+
 <!-- cspell:enable -->
 
 因此，式 (26) 的精确含义是一系列张量收缩，而不是普通的二维矩阵乘法。也正因为如此，计算过程中始终不需要显式构造 $N\times N$ 的 pairwise attention matrix。
@@ -771,7 +783,7 @@ Lebedev 求积的关键性质在于：它对一定阶数以下的球面多项式
 
 <!-- cspell:disable -->
 
-$$  
+$$
 \operatorname{EFA}(\mathcal{X},\mathbf{R})
 =
 \sum_{j=1}^{G}
@@ -1275,24 +1287,24 @@ $$
 
 ### 附录 B：符号表
 
-| 符号 | 含义 |
-| --- | --- |
-| $N$ | 体系中的原子数 |
-| $\mathbf{r}_m$ | 第 $m$ 个原子的三维坐标 |
-| $\mathbf{r}_{mn}$ | 相对位移，$\mathbf{r}_m-\mathbf{r}_n$ |
-| $r_{mn}$ | 相对距离，$\|\mathbf{r}_{mn}\|$ |
-| $\hat{\mathbf{r}}_{mn}$ | 相对位移的单位方向 |
-| $\mathbf{u}\in S^2$ | 单位球面上的辅助方向变量 |
-| $\omega,\omega_k$ | ERoPE 中使用的频率参数 |
-| $\mathbf{q},\mathbf{k},\mathbf{v}$ | query、key、value 表示 |
-| $\psi$ | 线性 attention 原型中的特征映射 |
-| $\Phi_{\mathbf{u}}$ | 将 $\psi$ 与 ERoPE 组合后的简写记号 |
-| $\mathbf{Y}^{(\ell)}$ | 阶数为 $\ell$ 的球谐函数向量 |
-| $j_\ell$ | 阶数为 $\ell$ 的 spherical Bessel function |
-| $G$ | Lebedev 求积的球面网格点数 |
-| $\lambda_j$ | 第 $j$ 个 Lebedev 网格点对应的求积权重 |
-| $L_{qk},L_v,L_Y$ | query/key、value 与球谐输出所使用的最大阶数 |
-| $D_{qk},D_v$ | query/key 与 value 的特征维度 |
-| $P$ | parity axis 的大小 |
-| $\mathcal{N}(m)$ | 原子 $m$ 的局部邻域 |
-| $\mathcal{F}_{\mathrm{loc}},\mathcal{F}_{\mathrm{nl}}$ | 局部分支与非局部分支的层映射 |
+| 符号                                                   | 含义                                        |
+| ------------------------------------------------------ | ------------------------------------------- |
+| $N$                                                    | 体系中的原子数                              |
+| $\mathbf{r}_m$                                         | 第 $m$ 个原子的三维坐标                     |
+| $\mathbf{r}_{mn}$                                      | 相对位移，$\mathbf{r}_m-\mathbf{r}_n$       |
+| $r_{mn}$                                               | 相对距离，$\|\mathbf{r}_{mn}\|$             |
+| $\hat{\mathbf{r}}_{mn}$                                | 相对位移的单位方向                          |
+| $\mathbf{u}\in S^2$                                    | 单位球面上的辅助方向变量                    |
+| $\omega,\omega_k$                                      | ERoPE 中使用的频率参数                      |
+| $\mathbf{q},\mathbf{k},\mathbf{v}$                     | query、key、value 表示                      |
+| $\psi$                                                 | 线性 attention 原型中的特征映射             |
+| $\Phi_{\mathbf{u}}$                                    | 将 $\psi$ 与 ERoPE 组合后的简写记号         |
+| $\mathbf{Y}^{(\ell)}$                                  | 阶数为 $\ell$ 的球谐函数向量                |
+| $j_\ell$                                               | 阶数为 $\ell$ 的 spherical Bessel function  |
+| $G$                                                    | Lebedev 求积的球面网格点数                  |
+| $\lambda_j$                                            | 第 $j$ 个 Lebedev 网格点对应的求积权重      |
+| $L_{qk},L_v,L_Y$                                       | query/key、value 与球谐输出所使用的最大阶数 |
+| $D_{qk},D_v$                                           | query/key 与 value 的特征维度               |
+| $P$                                                    | parity axis 的大小                          |
+| $\mathcal{N}(m)$                                       | 原子 $m$ 的局部邻域                         |
+| $\mathcal{F}_{\mathrm{loc}},\mathcal{F}_{\mathrm{nl}}$ | 局部分支与非局部分支的层映射                |

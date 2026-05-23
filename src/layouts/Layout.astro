@@ -11,7 +11,7 @@ interface Props {
 
 const {
   title,
-  description = "关于政治、科学与现代世界的随笔与评论。",
+  description = "兴来每独往，胜事空自知。",
   canonicalPath = Astro.url.pathname,
   ogType = "website",
   keywords = [],
@@ -66,15 +66,15 @@ const keywordContent = [...new Set(keywords)].join(", ");
 <style is:global>
   :root {
     color-scheme: light dark;
-    --background: #fbfaf7;
-    --text: #101010;
-    --muted: #5e5a54;
-    --faint: #8a857d;
-    --line: #ded8cc;
-    --accent: #7a2e22;
-    --accent-soft: #efe0d3;
-    --surface: #f4f0e8;
-    --surface-strong: #eee7dc;
+    --background: #faf8f2;
+    --text: #0f0f0e;
+    --muted: #60605a;
+    --faint: #929088;
+    --line: #ded8ca;
+    --accent: #9a6a2f;
+    --accent-soft: #eadfcb;
+    --surface: #f1ede3;
+    --surface-strong: #e8e1d2;
     font-family:
       "Noto Serif SC", "Source Han Serif SC", "Songti SC", Georgia, "Times New Roman",
       serif;
@@ -85,15 +85,15 @@ const keywordContent = [...new Set(keywords)].join(", ");
 
   @media (prefers-color-scheme: dark) {
     :root {
-      --background: #12110f;
-      --text: #f3eee6;
-      --muted: #b8aea1;
-      --faint: #8c8378;
-      --line: #342f28;
-      --accent: #d7a171;
-      --accent-soft: #33261e;
-      --surface: #1a1815;
-      --surface-strong: #211e1a;
+      --background: #11100e;
+      --text: #f0ece3;
+      --muted: #b7b2a8;
+      --faint: #878276;
+      --line: #302c25;
+      --accent: #caa46d;
+      --accent-soft: #342b1f;
+      --surface: #1b1915;
+      --surface-strong: #242018;
     }
   }
 
@@ -431,6 +431,13 @@ const keywordContent = [...new Set(keywords)].join(", ");
   @media (max-width: 620px) {
     :root {
       font-size: 16px;
+    }
+
+    .prose .katex-display > .katex > .katex-html > .tag {
+      position: static;
+      display: block;
+      margin-top: 0.45rem;
+      text-align: right;
     }
 
     .site-header {
