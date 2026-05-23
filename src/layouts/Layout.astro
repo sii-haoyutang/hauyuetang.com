@@ -7,6 +7,7 @@ interface Props {
   canonicalPath?: string;
   ogType?: "website" | "article";
   keywords?: string[];
+  backgroundTrackWidth?: string;
 }
 
 const {
@@ -15,6 +16,7 @@ const {
   canonicalPath = Astro.url.pathname,
   ogType = "website",
   keywords = [],
+  backgroundTrackWidth = "880px",
 } = Astro.props;
 
 const siteName = "Hauyue Tang";
@@ -46,7 +48,7 @@ const keywordContent = [...new Set(keywords)].join(", ");
     <meta name="twitter:description" content={description} />
     <title>{pageTitle}</title>
   </head>
-  <body>
+  <body style={`--background-track-width: ${backgroundTrackWidth};`}>
     <header class="site-header">
       <a class="site-title" href="/" aria-label="Hauyue Tang 首页">Hauyue Tang</a>
       <nav aria-label="主导航">
@@ -117,7 +119,7 @@ const keywordContent = [...new Set(keywords)].join(", ");
           color-mix(in srgb, var(--line) 38%, transparent) 1px,
           transparent 1px
         )
-        center top / min(100% - 40px, 880px) 100% no-repeat,
+        center top / min(100% - 40px, var(--background-track-width)) 100% no-repeat,
       var(--background);
     color: var(--text);
   }

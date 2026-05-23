@@ -38,6 +38,7 @@ const hasToc = tocHeadings.length >= 2;
   canonicalPath={getEssayUrl(essay)}
   ogType="article"
   keywords={keywords}
+  backgroundTrackWidth="1160px"
 >
   <main class="page-shell article-shell">
     <article>
@@ -211,6 +212,9 @@ const hasToc = tocHeadings.length >= 2;
       position: sticky;
       top: 28px;
       order: 2;
+      max-height: calc(100vh - 56px);
+      overflow-y: auto;
+      scrollbar-gutter: stable;
     }
 
     .prose {
